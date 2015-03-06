@@ -8,9 +8,9 @@ import org.ivo.automata.State;
 import org.ivo.automata.collections.StatesTable;
 
 public class HashtableTest extends TestCase {
-    
+
     private static final int NUM = 1000000;
-    
+
     public void test() {
         final StatesTable table = new StatesTable(0.01f);
         final LinkedList<State> list = new LinkedList<State>();
@@ -20,7 +20,7 @@ public class HashtableTest extends TestCase {
             list.addLast(state);
             table.addOrGet(state);
         }
-        
+
         table.printDistribution();
         int i = 0;
         while (!list.isEmpty()) {

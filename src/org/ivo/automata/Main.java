@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
 import org.ivo.automata.dictionary.OrderedListRecogniser;
 
 public class Main {
-    
+
     /**
      * @param args
      * @throws UnsupportedEncodingException

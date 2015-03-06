@@ -12,28 +12,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
 
+import org.ivo.automata.readers.ReaderWrapper;
 import org.ivo.automata.text.SubwordRecogniser;
 
 public class SubwordRecogniserTest extends TestCase {
-    
+
     public class Task implements Runnable {
-        
+
         private String word;
         private SubwordRecogniser recognizer;
         private AtomicInteger failedCount;
         private AtomicInteger completedCount;
-        
-        public Task(final String word, final SubwordRecogniser sr, final AtomicInteger failedCount,
-                final AtomicInteger completedCount) {
+
+        public Task(final String word, final SubwordRecogniser sr, final AtomicInteger failedCount, final AtomicInteger completedCount) {
             this.word = word;
             this.recognizer = sr;
             this.failedCount = failedCount;
             this.completedCount = completedCount;
         }
-        
+
         @Override
         public void run() {
-            final boolean result = recognizer.traverse(new StringReader(word));
+            final boolean result = recognizer.traverse(new ReaderWrapper(new StringReader(word)));
             if (!result) {
                 failedCount.incrementAndGet();
                 System.out.println("Failed " + failedCount.incrementAndGet());
@@ -45,13 +45,13 @@ public class SubwordRecogniserTest extends TestCase {
             completedCount = null;
         }
     }
-    
+
     public void test() throws IOException, InterruptedException {
         final File inputFile = new File("data", "text.txt");
         assertTrue(inputFile.exists());
-        
+
         final FileInputStream iStream = new FileInputStream(inputFile);
-        
+
         final byte[] bytes = new byte[(int) inputFile.length()];
         iStream.read(bytes);
         iStream.close();
@@ -62,7 +62,7 @@ public class SubwordRecogniserTest extends TestCase {
         final int MAX_THREADS = 80;
         final LinkedBlockingDeque<Runnable> deque = new LinkedBlockingDeque<Runnable>(MAX_THREADS) {
             private static final long serialVersionUID = 1L;
-            
+
             @Override
             public boolean offer(final Runnable e) {
                 try {
@@ -82,10 +82,10 @@ public class SubwordRecogniserTest extends TestCase {
                 executor.submit(new Task(word, sr, failedCount, completedCount));
             }
         }
-        
+
         executor.shutdown();
         // executor.awaitTermination(2, TimeUnit.MINUTES);
-        
+
         System.out.println("Failed count " + failedCount.get());
         assertEquals(0, failedCount.get());
     }

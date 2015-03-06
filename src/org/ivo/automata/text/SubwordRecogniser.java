@@ -6,9 +6,9 @@ import java.io.Reader;
 import org.ivo.automata.AbstractDeterministicAutomaton;
 
 public class SubwordRecogniser extends AbstractDeterministicAutomaton {
-    
+
     private final SRState source;
-    
+
     public SubwordRecogniser(final Reader textReader) throws IOException {
         SRState currentSink = newState();
         source = currentSink;
@@ -16,12 +16,11 @@ public class SubwordRecogniser extends AbstractDeterministicAutomaton {
         int read = 0;
         while (read >= 0) {
             read = textReader.read();
-            final char ch = (char) read;
-            currentSink = update(currentSink, ch);
+            currentSink = update(currentSink, read);
         }
     }
-    
-    private SRState update(final SRState currentSink, final char ch) {
+
+    private SRState update(final SRState currentSink, final int ch) {
         final SRState newSink = newState();
         // This is a primary transition until proven otherwise.
         currentSink.addTransition(newSink.getIndex(), ch);
@@ -31,16 +30,19 @@ public class SubwordRecogniser extends AbstractDeterministicAutomaton {
         while (currentState != source && suffixState == null) {
             currentState = currentState.getSuffixLink();
             if (!currentState.hasTransition(ch)) {
-                // No transition means this is a transition from one subword of a representative to
+                // No transition means this is a transition from one subword of
+                // a representative to
                 // another.
                 currentState.addTransition(newSink.getIndex(), ch);
                 currentState.setPrimary(ch, false);
             } else if (currentState.isPrimary(ch)) {
-                // We already have this transition, i.e. there is already a transition between these
+                // We already have this transition, i.e. there is already a
+                // transition between these
                 // two representatives.
                 suffixState = (SRState) nextState(currentState, ch);
             } else {
-                // Means we should branch here, i.e. a new representative is found.
+                // Means we should branch here, i.e. a new representative is
+                // found.
                 final SRState childState = (SRState) nextState(currentState, ch);
                 suffixState = split(currentState, childState, ch);
             }
@@ -51,8 +53,8 @@ public class SubwordRecogniser extends AbstractDeterministicAutomaton {
         newSink.setSuffixLink(suffixState);
         return newSink;
     }
-    
-    private SRState split(final SRState parentState, final SRState childState, final char ch) {
+
+    private SRState split(final SRState parentState, final SRState childState, final int ch) {
         // The state for the newly found representative.
         final SRState newChildState = newState();
         parentState.addTransition(newChildState.getIndex(), ch);
@@ -62,11 +64,12 @@ public class SubwordRecogniser extends AbstractDeterministicAutomaton {
             newChildState.addTransition(nextState(childState, currentCh).getIndex(), currentCh);
             newChildState.setPrimary(currentCh, false);
         }
-        
+
         newChildState.setSuffixLink(childState.getSuffixLink());
         childState.setSuffixLink(newChildState);
         SRState currentState = parentState;
-        // All suffixes of the new representative must have a transition to here.
+        // All suffixes of the new representative must have a transition to
+        // here.
         while (currentState != getStartState()) {
             currentState = currentState.getSuffixLink();
             if (currentState.hasTransition(ch) && !currentState.isPrimary(ch)) {
@@ -78,7 +81,7 @@ public class SubwordRecogniser extends AbstractDeterministicAutomaton {
         }
         return newChildState;
     }
-    
+
     @Override
     protected SRState newState() {
         final SRState result = new SRState();

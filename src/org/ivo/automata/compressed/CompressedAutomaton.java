@@ -8,10 +8,10 @@ import org.ivo.automata.State;
 import org.ivo.automata.util.Measure;
 
 public class CompressedAutomaton extends AbstractDeterministicAutomaton {
-    
+
     private static final int LOOK_BACK = 3;
     protected Transition[] table = new Transition[1];
-    
+
     public CompressedAutomaton(final IDeterministicAutomaton source) {
         final Measure m = new Measure();
         m.start();
@@ -39,11 +39,11 @@ public class CompressedAutomaton extends AbstractDeterministicAutomaton {
             }
         } finally {
             m.end();
-            m.print(this.getClass().getSimpleName() + " states=" + getNumStates() + " transCount=" + transitionsCount
-                    + " tableSize=" + table.length);
+            m.print(this.getClass().getSimpleName() + " states=" + getNumStates() + " transCount=" + transitionsCount + " tableSize="
+                    + table.length);
         }
     }
-    
+
     private void insertStates(final int tablePos, final State oldState, final CState newState) {
         for (int i = 0; i < oldState.getTransitionsCount(); i++) {
             final int ch = oldState.getTransitionAtIndex(i);
@@ -52,7 +52,7 @@ public class CompressedAutomaton extends AbstractDeterministicAutomaton {
             table[tablePos + ch] = transition;
         }
     }
-    
+
     protected int findPosition(final State oldState) {
         int pos = Math.max(0, table.length / LOOK_BACK);
         // int pos = 0;
@@ -61,7 +61,7 @@ public class CompressedAutomaton extends AbstractDeterministicAutomaton {
         }
         return pos;
     }
-    
+
     private boolean isFree(final int pos, final State oldState) {
         for (int i = 0; i < oldState.getTransitionsCount(); i++) {
             final int ch = oldState.getTransitionAtIndex(i);
@@ -72,22 +72,22 @@ public class CompressedAutomaton extends AbstractDeterministicAutomaton {
         }
         return true;
     }
-    
+
     @Override
     protected State newState() {
         return null;
     }
-    
+
     @Override
     protected State addState(final State state) {
         return state;
     }
-    
+
     @Override
     public int getNumStates() {
         return states.length;
     }
-    
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();

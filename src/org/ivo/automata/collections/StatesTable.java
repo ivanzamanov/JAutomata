@@ -3,29 +3,29 @@ package org.ivo.automata.collections;
 import org.ivo.automata.State;
 
 public class StatesTable {
-    
+
     private static class Entry {
         private State state;
         private Entry next = null;
         private final int hash;
-        
+
         public Entry(final State state, final int hash) {
             this.state = state;
             this.hash = hash;
         }
     }
-    
+
     private final float loadFactor;
     private Entry[] table;
     private int threshold;
     private int size = 0;
-    
+
     public StatesTable(final float loadFactor) {
         this.loadFactor = loadFactor;
         threshold = (int) (16 * loadFactor);
         this.table = new Entry[16];
     }
-    
+
     public void add(final State state) {
         final int hash = state.hashCode();
         final int tableIndex = getTableIndex(hash, table);
@@ -54,17 +54,17 @@ public class StatesTable {
             rehash();
         }
     }
-    
+
     private int getTableIndex(final int hash, final Entry[] table) {
         final int tableIndex;
         tableIndex = hash & table.length - 1;
         return tableIndex;
     }
-    
+
     public int size() {
         return size;
     }
-    
+
     private void rehash() {
         final int newTableLength = table.length * 2;
         final Entry[] newTable = new Entry[newTableLength];
@@ -79,13 +79,13 @@ public class StatesTable {
         }
         table = newTable;
     }
-    
+
     private void addToTable(final Entry[] table, final Entry entry) {
         final int tableIndex = getTableIndex(entry.hash, table);
         entry.next = table[tableIndex];
         table[tableIndex] = entry;
     }
-    
+
     public boolean remove(final State state) {
         final int hash = state.hashCode();
         final int tableIndex = getTableIndex(hash, table);
@@ -112,7 +112,7 @@ public class StatesTable {
             return false;
         }
     }
-    
+
     public State addOrGet(final State state) {
         final int hash = state.hashCode();
         final int tableIndex = getTableIndex(hash, table);
@@ -142,7 +142,7 @@ public class StatesTable {
             return state;
         }
     }
-    
+
     public State get(final State state) {
         final int hash = state.hashCode();
         final int tableIndex = getTableIndex(hash, table);
@@ -159,12 +159,12 @@ public class StatesTable {
             return null;
         }
     }
-    
+
     private boolean isEqual(final State state, final int hash, final Entry entry) {
         return entry.hash == hash && entry.state.equals(state);
         // return entry.state.equals(state);
     }
-    
+
     public void printDistribution() {
         for (int i = 0; i < table.length; i++) {
             Entry entry = table[i];

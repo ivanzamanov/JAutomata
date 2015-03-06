@@ -8,17 +8,17 @@ import java.util.Iterator;
 import java.util.List;
 
 public class AutomataSection extends AbstractDeterministicAutomaton {
-    
+
     private static class Wrapper {
         public Wrapper(final State state, final int i) {
             this.state = state;
             this.trIndex = i;
         }
-        
+
         private final State state;
         private int trIndex = -1;
     }
-    
+
     public static void traverseSection(final PrintStream output, final IDeterministicAutomaton... automatons) {
         if (automatons.length == 0) {
             return;
@@ -32,7 +32,7 @@ public class AutomataSection extends AbstractDeterministicAutomaton {
             wrappers.add(wrapper);
         }
         push(wrappers, stacks, output);
-        
+
         final Deque<Wrapper> stack = stacks.get(0);
         while (!stack.isEmpty()) {
             peek(stacks, wrappers);
@@ -46,7 +46,7 @@ public class AutomataSection extends AbstractDeterministicAutomaton {
             }
         }
     }
-    
+
     private static boolean haveCommonTransition(final List<Wrapper> wrappers, final IDeterministicAutomaton[] automatons) {
         final Wrapper wrapper = wrappers.get(0);
         if (wrapper.state.getTransitionsCount() > wrapper.trIndex) {
@@ -66,7 +66,7 @@ public class AutomataSection extends AbstractDeterministicAutomaton {
         }
         return false;
     }
-    
+
     private static void peek(final List<Deque<Wrapper>> stacks, final List<Wrapper> wrappers) {
         wrappers.clear();
         for (int i = 0; i < stacks.size(); i++) {
@@ -75,13 +75,13 @@ public class AutomataSection extends AbstractDeterministicAutomaton {
             wrappers.add(i, wrapper);
         }
     }
-    
+
     private static void pop(final List<Deque<Wrapper>> stacks) {
         for (final Deque<Wrapper> stack : stacks) {
             stack.removeLast();
         }
     }
-    
+
     private static void push(final List<Wrapper> wrappers, final List<Deque<Wrapper>> stacks, final PrintStream output) {
         boolean isFinal = true;
         for (int i = 0; i < wrappers.size(); i++) {
@@ -93,7 +93,7 @@ public class AutomataSection extends AbstractDeterministicAutomaton {
             printStack(stacks.get(0), output);
         }
     }
-    
+
     private static void printStack(final Deque<Wrapper> stack, final PrintStream output) {
         if (stack.isEmpty()) {
             return;

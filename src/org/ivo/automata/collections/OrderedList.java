@@ -9,13 +9,13 @@ import java.util.ArrayList;
  * @param <E>
  */
 public class OrderedList<E extends Comparable<E>> extends ArrayList<E> {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     public OrderedList() {
         super();
     }
-    
+
     @Override
     public boolean add(final E elem) {
         if (elem == null) {

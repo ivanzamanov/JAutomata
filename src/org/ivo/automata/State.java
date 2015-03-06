@@ -3,33 +3,33 @@ package org.ivo.automata;
 import java.util.Arrays;
 
 public class State {
-    
+
     private int index = -1;
     protected int[] trChar = new int[1];
     protected int[] trTarget = new int[1];
     private boolean isFinal = false;
     protected int transitionsCount = 0;
-    
+
     public State() {
-        
+
     }
-    
+
     public final void setFinal(final boolean isFinal) {
         this.isFinal = isFinal;
     }
-    
+
     public final boolean isFinal() {
         return this.isFinal;
     }
-    
+
     public final int getIndex() {
         return index;
     }
-    
+
     public void setIndex(final int index) {
         this.index = index;
     }
-    
+
     public int addTransition(final int target, final int ch) {
         if (transitionsCount == 0) {
             trChar[0] = ch;
@@ -58,12 +58,12 @@ public class State {
         trTarget[index] = target;
         return index;
     }
-    
+
     private void expandToSize(final int size) {
         trChar = Arrays.copyOf(trChar, size);
         trTarget = Arrays.copyOf(trTarget, size);
     }
-    
+
     public int getTransitionTarget(final int ch) {
         final int index = Arrays.binarySearch(trChar, 0, transitionsCount, ch);
         if (index < 0) {
@@ -72,11 +72,11 @@ public class State {
             return trTarget[index];
         }
     }
-    
-    public boolean hasTransition(final char ch) {
+
+    public boolean hasTransition(final int ch) {
         return getTransitionIndex(ch) >= 0;
     }
-    
+
     public void clear() {
         trChar = new int[1];
         trTarget = new int[1];
@@ -84,19 +84,19 @@ public class State {
         index = -1;
         isFinal = false;
     }
-    
+
     public int getTransitionsCount() {
         return transitionsCount;
     }
-    
+
     public int getTransitionAtIndex(final int trIndex) {
         return trChar[trIndex];
     }
-    
+
     public int getTransitionIndex(final int ch) {
         return Arrays.binarySearch(trChar, 0, transitionsCount, ch);
     }
-    
+
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof State) {
@@ -104,7 +104,7 @@ public class State {
         }
         return super.equals(obj);
     }
-    
+
     @Override
     public int hashCode() {
         return getIndex();

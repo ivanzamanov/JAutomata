@@ -1,7 +1,5 @@
 package org.ivo.automata;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -13,13 +11,13 @@ import java.util.LinkedList;
  *            Class of the automaton's states.
  */
 public abstract class AbstractDeterministicAutomaton implements IMutableDeterministicAutomaton {
-    
+
     protected State[] states = new State[1];
     protected int state_index = 0;
     private int startState = 0;
     protected final LinkedList<Integer> deletedIndices = new LinkedList<Integer>();
     protected int deletedCount = 0;
-    
+
     protected State addState(final State state) {
         int newStateIndex;
         if (!deletedIndices.isEmpty()) {
@@ -37,35 +35,30 @@ public abstract class AbstractDeterministicAutomaton implements IMutableDetermin
             return state;
         }
     }
-    
+
     protected State newState() {
         final State state = new State();
         return addState(state);
     }
-    
+
     protected State buildState() {
         final State state = new State();
         return state;
     }
-    
+
     @Override
-    public boolean traverse(final Reader is) {
+    public boolean traverse(final SequenceReader is) {
         State currentState = getStartState();
-        try {
-            while (currentState != null) {
-                final int read = is.read();
-                if (read == -1) {
-                    break;
-                }
-                final char ch = (char) read;
-                currentState = nextState(currentState, ch);
+        while (currentState != null) {
+            final int read = is.read().toInt();
+            if (read == -1) {
+                break;
             }
-        } catch (final IOException e) {
-            // End of stream.
+            currentState = nextState(currentState, read);
         }
         return currentState != null && currentState.isFinal();
     }
-    
+
     @Override
     public State nextState(final State fromState, final int ch) {
         final int targetIndex = fromState.getTransitionTarget(ch);
@@ -75,7 +68,7 @@ public abstract class AbstractDeterministicAutomaton implements IMutableDetermin
             return null;
         }
     }
-    
+
     @Override
     public State getStartState() {
         if (startState >= 0 && startState < states.length) {
@@ -84,7 +77,7 @@ public abstract class AbstractDeterministicAutomaton implements IMutableDetermin
             return null;
         }
     }
-    
+
     @Override
     public void deleteState(final State state) {
         deletedCount++;
@@ -92,17 +85,17 @@ public abstract class AbstractDeterministicAutomaton implements IMutableDetermin
         state.clear();
         this.deletedIndices.push(index);
     }
-    
+
     @Override
     public State[] getStates() {
         return states;
     }
-    
+
     @Override
     public final void setStartState(final State state) {
         this.startState = state.getIndex();
     }
-    
+
     @Override
     public int getNumStates() {
         return state_index - deletedIndices.size();

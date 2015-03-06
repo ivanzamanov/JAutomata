@@ -3,7 +3,7 @@ package org.ivo.automata.dictionary;
 import org.ivo.automata.State;
 
 public class OLRState extends State {
-    
+
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof OLRState) {
@@ -22,26 +22,26 @@ public class OLRState extends State {
             return super.equals(obj);
         }
     }
-    
+
     @Override
     public int hashCode() {
         return fnvHash();
     }
-    
+
     @SuppressWarnings("unused")
     private int defaultHash() {
         int mul = 0;
         if (isFinal()) {
             mul = 1;
         }
-        
+
         int sum = 0;
         for (int i = 0; i < getTransitionsCount(); i++) {
             sum += trChar[i] * trTarget[i];
         }
         return (Integer.MAX_VALUE >> 1) * mul + sum;
     }
-    
+
     private int fnvHash() {
         long h = 2166136261l;
         for (int i = 0; i < getTransitionsCount(); i++) {
@@ -49,7 +49,7 @@ public class OLRState extends State {
         }
         return (int) h & Integer.MAX_VALUE;
     }
-    
+
     @SuppressWarnings("unused")
     private int otatHash() {
         int h = 0;
@@ -58,12 +58,12 @@ public class OLRState extends State {
             h += trChar[i];
             h += h << 10;
             h ^= h >> 6;
-            
+
             h += trTarget[i];
             h += h << 10;
             h ^= h >> 6;
         }
-        
+
         h += h << 3;
         h ^= h >> 11;
         h += h << 15;

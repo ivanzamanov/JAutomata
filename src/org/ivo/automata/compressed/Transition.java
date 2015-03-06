@@ -4,7 +4,7 @@ public class Transition implements Comparable<Transition> {
     public int source;
     public int target;
     public final int ch;
-    
+
     public Transition(final int target, final int ch) {
         if (source < 0 || target < 0) {
             throw new IllegalArgumentException("Source or destination cannot be < 0. Got " + target);
@@ -12,7 +12,7 @@ public class Transition implements Comparable<Transition> {
         this.target = target;
         this.ch = ch;
     }
-    
+
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof Transition) {
@@ -21,7 +21,7 @@ public class Transition implements Comparable<Transition> {
         }
         return super.equals(obj);
     }
-    
+
     @Override
     public int compareTo(final Transition o) {
         if (ch > o.ch) {

@@ -1,15 +1,13 @@
 package org.ivo.automata;
 
-import java.io.Reader;
-
 public interface IDeterministicAutomaton {
     State getStartState();
-    
-    boolean traverse(final Reader reader);
-    
+
+    boolean traverse(final SequenceReader reader);
+
     State nextState(final State fromState, final int withChar);
-    
+
     int getNumStates();
-    
+
     State[] getStates();
 }
