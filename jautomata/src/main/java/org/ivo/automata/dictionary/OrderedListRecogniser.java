@@ -28,10 +28,7 @@ public class OrderedListRecogniser extends AbstractDeterministicAutomaton {
     public OrderedListRecogniser(final Reader inputStream, final String wordSeparator) {
         final Measure m = new Measure();
         m.start();
-        int wordCount = 0;
-        long totalCharCount = 0;
         final Scanner scanner = new Scanner(inputStream);
-        int statesCount = 0;
         try {
             scanner.useDelimiter(Pattern.quote(wordSeparator));
             final OLRState startState = newState();
@@ -41,12 +38,10 @@ public class OrderedListRecogniser extends AbstractDeterministicAutomaton {
             chainStates.add(startState);
             String lastWord = "";
             while (scanner.hasNext()) {
-                wordCount++;
                 final String currentWord = scanner.next();
                 if (currentWord.compareTo(lastWord) < 0) {
                     throw new IllegalArgumentException("List not ordered, " + lastWord + " > " + currentWord);
                 }
-                totalCharCount += currentWord.length();
                 
                 // Traverse as much as possible.
                 int i = 1;
@@ -78,23 +73,6 @@ public class OrderedListRecogniser extends AbstractDeterministicAutomaton {
                 }
                 currentState.setFinal(true);
                 lastWord = currentWord;
-                final int numStates = getNumStates();
-                if (numStates - statesCount > 1000000) {
-                    statesCount = getNumStates();
-                    int transitionCount = 0;
-                    for (int j = 0; j < states.length; j++) {
-                        if (states[j] != null) {
-                            transitionCount += states[j].getTransitionsCount();
-                        }
-                    }
-                    System.out.println(statesCount + " states, hash size = " + minimizedStates.size()
-                            + " transitions = " + transitionCount);
-                    System.out.println(chainStates.size() + " unminimized states");
-                    final long free = Runtime.getRuntime().freeMemory() / 1024;
-                    System.out.println("Free memory " + free);
-                    System.out.println("Reusable count " + deletedIndices.size());
-                    System.out.println("Total deleted " + deletedCount);
-                }
             }
             // Finally, minimize the last chain.
             for (int j = lastWord.length(); j >= 1; j--) {
@@ -111,15 +89,6 @@ public class OrderedListRecogniser extends AbstractDeterministicAutomaton {
                 chainStates.remove(chainStates.size() - 1);
             }
         } finally {
-            m.end();
-            int transitionsCount = 0;
-            for (int i = 0; i < states.length; i++) {
-                if (states[i] != null && states[i].getIndex() >= 0) {
-                    transitionsCount += states[i].getTransitionsCount();
-                }
-            }
-            m.print(this.getClass().getSimpleName() + " states=" + getNumStates() + " transitions=" + transitionsCount
-                    + " wordCount=" + wordCount + " charCount=" + totalCharCount + " reusable=" + deletedIndices.size());
             scanner.close();
         }
     }
