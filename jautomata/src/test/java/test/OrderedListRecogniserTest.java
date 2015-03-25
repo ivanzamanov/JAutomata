@@ -13,10 +13,10 @@ import org.ivo.automata.dictionary.OrderedListRecogniser;
 public class OrderedListRecogniserTest extends TestCase {
     
     public void test() throws FileNotFoundException {
-        for (int i = 5; i < 10000; i++) {
+        for (int i = 5; i < 1000; i++) {
             doTest(i);
         }
-        doTest(10000);
+        doTest(1000);
     }
     
     private void doTest(final int numTestWords) throws FileNotFoundException {

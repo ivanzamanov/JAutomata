@@ -15,7 +15,7 @@ import org.ivo.automata.dictionary.OrderedListRecogniser;
 public class OLRTest extends TestCase {
     
     public void testBenchmark() throws FileNotFoundException, UnsupportedEncodingException {
-        final File inputFile = new File("data", "titles.txt");
+        final File inputFile = new File("src/main/resources/data", "words.txt");
         final InputStream inputStream = new FileInputStream(inputFile);
         final Reader reader = new InputStreamReader(inputStream);
         new OrderedListRecogniser(reader, "\n");
