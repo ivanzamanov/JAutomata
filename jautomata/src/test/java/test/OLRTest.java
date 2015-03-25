@@ -1,11 +1,7 @@
 package test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 
 import junit.framework.TestCase;
@@ -13,13 +9,12 @@ import junit.framework.TestCase;
 import org.ivo.automata.dictionary.OrderedListRecogniser;
 
 public class OLRTest extends TestCase {
-    
-    public void testBenchmark() throws FileNotFoundException, UnsupportedEncodingException {
-        final File inputFile = new File("src/main/resources/data", "words.txt");
-        final InputStream inputStream = new FileInputStream(inputFile);
-        final Reader reader = new InputStreamReader(inputStream);
-        new OrderedListRecogniser(reader, "\n");
-        
-        // AutomataSection.traverseSection(System.out, orderedListRecogniser);
-    }
+
+	public void testBenchmark() throws FileNotFoundException,
+			UnsupportedEncodingException {
+		new OrderedListRecogniser(new StringReader("word1 word2 word3 word4"),
+				" ");
+
+		// AutomataSection.traverseSection(System.out, orderedListRecogniser);
+	}
 }
